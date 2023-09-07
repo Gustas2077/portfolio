@@ -1,7 +1,7 @@
 export function Projects() {
   return (
     <>
-      <main className=""></main>
+      <main className="min-h-full"></main>
     </>
   );
 }

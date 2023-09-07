@@ -3,7 +3,7 @@ import { Home, Box, Settings, User2, Code2 } from "lucide-react";
 
 export function Navbar() {
   return (
-    <nav className="z-50 w-full flex relative justify-center items-center bg-slate-200 text-black max-xl:rounded-t-lg xl:rounded-b-lg">
+    <nav className="w-full flex relative justify-center items-center bg-slate-200 text-black">
       <ul className="max-w-sm flex max-sm:scale-75">
         <li className="">
           <Link

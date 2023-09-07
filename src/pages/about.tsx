@@ -1,7 +1,7 @@
 export function About() {
   return (
     <>
-      <main className="flex flex-col gap-4">
+      <main className="flex flex-col gap-4 min-h-full">
         <div className="flex justify-center items-center">
           <img
             className="h-96 w-96 rounded-full object-cover object-center max-xl:h-64 max-xl:w-64 max-sm:h-48 max-sm:w-48 shadow-xl hover:shadow-green-700 ease-in duration-100"

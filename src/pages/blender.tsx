@@ -46,7 +46,7 @@ function Card({ title, description, img }: Card) {
 export function Blender() {
   return (
     <>
-      <main>
+      <main className="min-h-full">
         <div className="relative flex justify-center items-center w-full my-6">
           <span className="bg-clip-text text-transparent bg-lime-500 text-center uppercase text-5xl font-extrabold underline decoration-4 decoration-green-500 decoration-double max-sm:text-2xl max-xl:text-4xl blinking-cursor px-10">
             Blender...
