@@ -25,6 +25,16 @@ const Cards: Card[] = [
     description: "Card description",
     img: "https://tecdn.b-cdn.net/img/new/standard/nature/184.jpg",
   },
+  {
+    title: "Card title",
+    description: "Card description",
+    img: "https://tecdn.b-cdn.net/img/new/standard/nature/184.jpg",
+  },
+  {
+    title: "Card title",
+    description: "Card description",
+    img: "https://tecdn.b-cdn.net/img/new/standard/nature/184.jpg",
+  },
 ];
 
 function Card({ title, description, img }: Card) {
@@ -47,12 +57,12 @@ export function Blender() {
   return (
     <>
       <main className="min-h-full">
-        <div className="relative flex justify-center items-center w-full my-6">
-          <span className="bg-clip-text text-transparent bg-lime-500 text-center uppercase text-5xl font-extrabold underline decoration-4 decoration-green-500 decoration-double max-sm:text-2xl max-xl:text-4xl blinking-cursor px-10">
-            Blender...
+        <div className="relative flex justify-center items-center w-full my-12">
+          <span className="bg-clip-text text-transparent text-center uppercase text-5xl font-extrabold px-10 linear-wipe">
+            Blender
           </span>
         </div>
-        <section className="max-w-6xl mx-auto grid gap-2 grid-cols-1 sm:max-w-xl md:grid-cols-2 md:max-w-3xl xl:grid-cols-4 xl:max-w-6xl">
+        <section className="max-w-6xl mx-auto grid gap-8 grid-cols-1 sm:max-w-xl md:grid-cols-2 md:max-w-3xl xl:grid-cols-3 xl:max-w-6xl">
           {Cards.map(({ title, description, img }) => (
             <Card title={title} description={description} img={img} />
           ))}

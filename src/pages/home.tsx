@@ -7,14 +7,15 @@ import ReactIcon from "../../public/react-original.svg";
 export function Home() {
   return (
     <main className="min-h-full">
-      <section className="hero relative w-full flex flex-col justify-center items-center gap-6 text-justify bg-slate-500 max-sm:text-sm">
-        <h1 className="linear-wipe font-extrabold uppercase text-5xl text-center max-sm:text-3xl">
+      <section className="hero relative w-full flex flex-col justify-center items-center gap-6 text-justify max-sm:text-sm herotopography">
+        <h1 className="text-slate-200 font-extrabold uppercase text-5xl text-center max-sm:text-3xl">
           Welcome to My Portfolio
         </h1>
         <div className="absolute bottom-6 animate-bounce rounded-full ring-2 bg-slate-700">
           <ArrowDown size={36} />
         </div>
       </section>
+      <hr className="h-0.5 border-t-0 bg-neutral-100 opacity-100 dark:opacity-50" />
       <section className="max-w-xl h-screen flex flex-col justify-center items-center gap-6 text-justify mx-auto">
         <h3 className="italic font-extrabold text-2xl">
           Turning Ideas into Code
@@ -42,9 +43,12 @@ export function Home() {
           <img src={JavascriptIcon} alt="JavaScript" />
           <img src={BlenderIcon} alt="Blender" />
         </div>
-        <h3 className="text-center font-extrabold text-xl">
+        <p className="text-center font-extrabold text-xl">
           "Ready to See My Creations in Action? Let's Dive In!"
-        </h3>
+        </p>
+        <p className="text-center font-extrabold text-xl">
+          "Or check out the about me page to learn more about me!"
+        </p>
       </section>
     </main>
   );
