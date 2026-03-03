@@ -1,11 +1,22 @@
-import { Outlet } from "@tanstack/react-router";
+import { Outlet, useRouterState } from "@tanstack/react-router";
+import { useEffect, useRef } from "react";
 import { Navbar } from "../components/navbar";
 
 export function Root() {
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  });
+
+  useEffect(() => {
+    if (!scrollContainerRef.current) return;
+    scrollContainerRef.current.scrollTo({ top: 0, behavior: "auto" });
+  }, [pathname]);
+
   return (
     <>
       <Navbar />
-      <div className="w-full h-full overflow-auto">
+      <div ref={scrollContainerRef} className="w-full h-full overflow-auto">
         <Outlet />
 
         <footer className="bg-white rounded-lg shadow dark:bg-gray-900 m-4">
