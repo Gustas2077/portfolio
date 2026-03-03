@@ -13,6 +13,8 @@ import {
 } from "../utils";
 
 const TOKEN_KEY = "admin_token";
+const CLOUDINARY_CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
 const initialForm: CreateCardPayload = {
   title: "",
@@ -22,11 +24,38 @@ const initialForm: CreateCardPayload = {
   tag: "project",
 };
 
+const withCloudinaryAttachment = (value: string) => {
+  try {
+    const parsed = new URL(value);
+    const marker = "/image/upload/";
+
+    if (!parsed.pathname.includes(marker)) {
+      return value;
+    }
+
+    if (
+      parsed.pathname.includes("/image/upload/fl_attachment/") ||
+      parsed.pathname.includes("/image/upload/fl_attachment:")
+    ) {
+      return value;
+    }
+
+    parsed.pathname = parsed.pathname.replace(
+      marker,
+      "/image/upload/fl_attachment/"
+    );
+    return parsed.toString();
+  } catch {
+    return value;
+  }
+};
+
 export function Settings() {
   const [token, setToken] = useState<string | null>(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [message, setMessage] = useState("");
   const [form, setForm] = useState<CreateCardPayload>(initialForm);
   const [cards, setCards] = useState<Card[]>([]);
@@ -106,12 +135,17 @@ export function Settings() {
     setLoading(true);
     setMessage("");
 
+    const normalizedForm: CreateCardPayload = {
+      ...form,
+      url: withCloudinaryAttachment(form.url),
+    };
+
     try {
       if (editingId !== null) {
-        await updateProjectCard(token, editingId, form);
+        await updateProjectCard(token, editingId, normalizedForm);
         setMessage("Project card updated.");
       } else {
-        await createProjectCard(token, form);
+        await createProjectCard(token, normalizedForm);
         setMessage("Project card uploaded.");
       }
 
@@ -164,6 +198,51 @@ export function Settings() {
       setMessage("Failed to delete card.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleImageFileUpload = async (file: File) => {
+    if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
+      setMessage(
+        "Cloudinary is not configured. Set VITE_CLOUDINARY_CLOUD_NAME and VITE_CLOUDINARY_UPLOAD_PRESET."
+      );
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+
+    setUploadingImage(true);
+    setMessage("Uploading image...");
+
+    try {
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Image upload failed");
+      }
+
+      const data: { secure_url?: string } = await response.json();
+      if (!data.secure_url) {
+        throw new Error("Image URL missing");
+      }
+
+      setForm((prev) => ({ ...prev, image: data.secure_url! }));
+      setMessage("Image uploaded from your PC.");
+    } catch (error) {
+      const detail =
+        error instanceof Error ? ` ${error.message}` : "";
+      setMessage(`Failed to upload image.${detail}`);
+    } finally {
+      setUploadingImage(false);
     }
   };
 
@@ -252,6 +331,26 @@ export function Settings() {
                 className="border rounded p-2 bg-transparent"
                 required
               />
+              <label className="text-sm font-medium opacity-80">
+                Or upload image from your PC
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  handleImageFileUpload(file);
+                  e.currentTarget.value = "";
+                }}
+                disabled={uploadingImage}
+                className="border rounded p-2 bg-transparent file:mr-3 file:px-3 file:py-1 file:rounded file:border-0 file:bg-slate-700 file:text-white"
+              />
+              {uploadingImage && (
+                <p className="text-sm font-semibold text-blue-600 dark:text-blue-400">
+                  Uploading image...
+                </p>
+              )}
               <input
                 type="url"
                 placeholder="Project URL"
